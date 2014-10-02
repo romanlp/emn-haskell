@@ -147,31 +147,42 @@ myFst (x,_) = x
 -- TODO: definir recursivement
 
 myDropWhile :: (a -> Bool) -> [a] -> [a]
-myDropWhile = undefined
+myDropWhile f (x:xs) | f x 		 = myDropWhile f xs
+			   		 | otherwise = x:xs
+myDropWhile f []                 = []
 
 myElem :: Eq a => a -> [a] -> Bool
-myElem = undefined
+myElem x [] 				= False
+myElem x (y:ys) | x==y 		= True
+				| otherwise = myElem x (ys)
+
 
 myNotElem :: Eq a => a -> [a] -> Bool
-myNotElem = undefined
+myNotElem x (y:ys) = not (myElem x (y:ys))
 
 myFilter :: (a -> Bool) -> [a] -> [a]
-myFilter = undefined
+myFilter f (x:xs) | f x 		= x:myFilter f xs
+				  | otherwise 	= myFilter f xs
+myFilter f [] 					= []
 
 mySplitAt :: Int -> [a] -> ([a],[a])
-mySplitAt = undefined
+mySplitAt x (y:ys) = (myTake x (y:ys), myDrop x (y:ys))
 
 myZip :: [a] -> [b] -> [(a,b)] 
-myZip = undefined
+myZip _ [] = []
+myZip [] _ = []
+myZip (x:xs) (y:ys) = (x,y):myZip xs ys
 
 myZipWith :: (a -> b -> c) -> [a] -> [b] -> [c] 
-myZipWith = undefined
+myZipWith f _ [] 		 	= []
+myZipWith f [] _			= []
+myZipWith f (x:xs) (y:ys) 	= (f x y):myZipWith f xs ys
 
 myCurry :: ((a,b) -> c) -> a -> b -> c
-myCurry = undefined
+myCurry f x y = f(x,y)
 
 myUncurry :: (a -> b -> c) -> (a,b) -> c
-myUncurry = undefined
+myUncurry f (x,y) = f x y
 
 myZipWith' :: (a -> b -> c) -> [a] -> [b] -> [c] 
 myZipWith' = undefined
@@ -188,7 +199,7 @@ myMap' ::  (a -> b) -> [a] -> [b]
 myMap' = undefined
 
 myOr' ::  [Bool] -> Bool
-myOr' = undefined
+myOr' (x:xs) = myFoldr (||) x xs
 
 myAny :: (a -> Bool) -> [a] -> Bool
 myAny = undefined
@@ -197,11 +208,12 @@ myAll :: (a -> Bool) -> [a] -> Bool
 myAll = undefined
 
 myProduct :: [Int] -> Int
-myProduct = undefined
+myProduct (x:xs) = myFoldr (*) x xs
 
 -- TODO: calculuer les 50 plus petits nombres premiers 2, 3, 5, 7, 11...
 
 premiers :: [Int]
-premiers = undefined
+premiers = [2..]
 
-test2 = take 50 premiers
+test2 = take 50 (crible premiers)
+	where crible (n:ns) = n:crible (filter (\x -> x `mod` n /= 0) ns)
