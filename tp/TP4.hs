@@ -152,7 +152,10 @@ codeAll root s = concat (map (codeOne root) s)
 -- decodage d'une liste de bits
 -- decode (Node (Leaf 'a') (Node (Leaf 'b') (Leaf 'c'))) (Node (Leaf 'a') (Node (Leaf 'b') (Leaf 'c'))) [L,R,L,R,R,R,L,R,R,L,L] == "abcbcaa"
 decode :: Huff Char -> Huff Char -> Bits -> String
-decode = undefined
+decode (Node g d) arbre2 (x:xs) | x == L = decode g arbre2 xs
+								| otherwise = decode d arbre2 xs
+decode (Leaf c) arbre2 (x:xs) = c:(decode arbre2 arbre2 (x:xs))
+decode (Leaf c) arbre2 [] = [c]
 
 -- verifie la correction en codange puis decodant et calcule le ratio de compression (hors arbre)
 -- test10 exemple1 == (True,0.19642857)
